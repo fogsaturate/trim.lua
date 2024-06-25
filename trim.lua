@@ -396,10 +396,12 @@ function writeOut()
         "-i", tostring(sourcePath),
         "-t", tostring(trimDuration),
 
-        "-map", "v:0?",
-        "-map", "a:0?",
-        "-c", "copy",
-
+	"-c:v", "libx264",
+	"-preset", "ultrafast",
+	"-map", "v:0?",
+    "-map", "a:0?",
+	"-c:a", "copy",
+	"-c:v", "copy",
         strip_metadata ..
 
         "-avoid_negative_ts", "make_zero",
