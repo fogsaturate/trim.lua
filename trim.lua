@@ -85,6 +85,12 @@ local function initializeIfNeeded()
 
     mp.add_forced_key_binding(";", "toggle-resolution", function()
         local message = ""
+
+        local width = mp.get_property("width")
+        local height = mp.get_property("height")
+
+        local currentResolution = tostring(width) .. ":" .. tostring(height)
+
         if resolutionIndex == 1 then
             resolutionIndex = 2
             message ="trim: Resolution: 720p"
@@ -111,17 +117,29 @@ local function initializeIfNeeded()
         local message = ""
         crfInt = crfInt + 1
 
-        message = "trim: CRF: " .. tostring(crfInt)
-        mp.osd_message(message, 3)
-    end)
+        if crfInt < 51 then
+            message = "trim: CRF: " .. tostring(crfInt)
+            mp.osd_message(message, 3)
+        else
+            crfInt = 51
+            message = "trim: CRF: " .. tostring(crfInt) .. " (Max)"
+            mp.osd_message(message, 3)
+        end
+    end, {repeatable = true})
 
     mp.add_forced_key_binding(":", "decrease-crf", function()
         local message = ""
         crfInt = crfInt - 1
 
-        message = "trim: CRF: " .. tostring(crfInt)
-        mp.osd_message(message, 3)
-    end)
+        if crfInt > 0 then
+            message = "trim: CRF: " .. tostring(crfInt)
+            mp.osd_message(message, 3)
+        else
+            crfInt = 0
+            message = "trim: CRF: " .. tostring(crfInt) .. " (Min)"
+            mp.osd_message(message, 3)
+        end
+    end, {repeatable = true})
 
     if isVideoFile then
         -- Seeking by Keyframe
