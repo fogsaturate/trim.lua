@@ -122,7 +122,7 @@ local function initializeIfNeeded()
             mp.osd_message(message, 3)
         else
             crfInt = 51
-            message = "trim: CRF: " .. tostring(crfInt) .. " (Max)"
+            message = "trim: CRF: " .. tostring(crfInt) .. " (Lowest Quality)"
             mp.osd_message(message, 3)
         end
     end, {repeatable = true})
@@ -136,7 +136,7 @@ local function initializeIfNeeded()
             mp.osd_message(message, 3)
         else
             crfInt = 0
-            message = "trim: CRF: " .. tostring(crfInt) .. " (Min)"
+            message = "trim: CRF: " .. tostring(crfInt) .. " (Lossless)"
             mp.osd_message(message, 3)
         end
     end, {repeatable = true})
