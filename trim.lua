@@ -25,6 +25,21 @@ local initialized = false
 local startPosition = 0.0
 local endPosition = 0.0
 
+local crfInt = 23 -- h264 default is 23
+
+-- budget enum table from the hood
+local resolutionIndex = 1
+local resolutions = {
+    "1920:1080",
+    "1280:720"
+}
+
+local framerateIndex = 1
+local framerates = {
+    "60",
+    "30"
+}
+
 local function initializeIfNeeded()
     if initialized then
         return
@@ -65,6 +80,46 @@ local function initializeIfNeeded()
         else
             message ="trim: Strip Metadata Disabled"
         end
+        mp.osd_message(message, 3)
+    end)
+
+    mp.add_forced_key_binding(";", "toggle-resolution", function()
+        local message = ""
+        if resolutionIndex == 1 then
+            resolutionIndex = 2
+            message ="trim: Resolution: 1080p"
+        else
+            resolutionIndex = 1
+            message ="trim: Resolution: 720p"
+        end
+        mp.osd_message(message, 3)
+    end)
+
+    mp.add_forced_key_binding("'", "toggle-framerate", function()
+        local message = ""
+        if framerateIndex == 1 then
+            framerateIndex = 2
+            message ="trim: Framerate: 60fps"
+        else
+            framerateIndex = 1
+            message ="trim: Framerate: 30fps"
+        end
+        mp.osd_message(message, 3)
+    end)
+
+    mp.add_forced_key_binding('"', "increase-crf", function()
+        local message = ""
+        crfInt = crfInt + 1
+
+        message = "trim: CRF: " .. tostring(crfInt)
+        mp.osd_message(message, 3)
+    end)
+
+    mp.add_forced_key_binding(":", "decrease-crf", function()
+        local message = ""
+        crfInt = crfInt - 1
+
+        message = "trim: CRF: " .. tostring(crfInt)
         mp.osd_message(message, 3)
     end)
 
@@ -278,6 +333,11 @@ function setEndPosition()
     updateTrimmingPositionsOSDASS()
 end
 
+function toggleResolution()
+    msg.log("info", "KEYBIND PRESSED!!!!")
+
+end
+
 function writeOut()
     --
     -- Error Handlings
@@ -395,13 +455,15 @@ function writeOut()
         "-ss", tostring(startPosition),
         "-i", tostring(sourcePath),
         "-t", tostring(trimDuration),
-
-	"-c:v", "libx264",
-	"-preset", "ultrafast",
-	"-map", "v:0?",
-    "-map", "a:0?",
-	"-c:a", "copy",
-	"-c:v", "copy",
+        
+        "-vf", "scale=" .. resolutions[resolutionIndex],
+        "-c:v", "libx264",
+        "-preset", "ultrafast",
+        "-crf", tostring(crfInt),
+        "-r", framerates[framerateIndex],
+        "-map", "v:0?",
+        "-map", "a:0?",
+        "-c:a", "copy",
         strip_metadata ..
 
         "-avoid_negative_ts", "make_zero",
