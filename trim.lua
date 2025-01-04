@@ -333,11 +333,6 @@ function setEndPosition()
     updateTrimmingPositionsOSDASS()
 end
 
-function toggleResolution()
-    msg.log("info", "KEYBIND PRESSED!!!!")
-
-end
-
 function writeOut()
     --
     -- Error Handlings
