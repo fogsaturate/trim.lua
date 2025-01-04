@@ -56,6 +56,16 @@ ffmpeg_bin = "ffmpeg.exe"
 
 - <kbd>t</kbd>
 
+#### Edit the Video's Properties (After initializing trim mode)
+
+> Can let you change the resolution, framerate, and CRF (bitrate or quality)
+
+- <kbd>;</kbd> `Toggle resolution to 720p or 1080p (1080p default)`
+- <kbd>'</kbd> `Toggle FPS to 30 or 60 (60fps default)`
+
+- <kbd>shift</kbd> + <kbd>;</kbd> `Decrease the CRF by 1`
+- <kbd>shift</kbd> + <kbd>'</kbd> `Increase the CRF by 1`
+
 
 #### Save Trim Positions
 
