@@ -87,10 +87,10 @@ local function initializeIfNeeded()
         local message = ""
         if resolutionIndex == 1 then
             resolutionIndex = 2
-            message ="trim: Resolution: 1080p"
+            message ="trim: Resolution: 720p"
         else
             resolutionIndex = 1
-            message ="trim: Resolution: 720p"
+            message ="trim: Resolution: 1080p"
         end
         mp.osd_message(message, 3)
     end)
@@ -99,10 +99,10 @@ local function initializeIfNeeded()
         local message = ""
         if framerateIndex == 1 then
             framerateIndex = 2
-            message ="trim: Framerate: 60fps"
+            message ="trim: Framerate: 30fps"
         else
             framerateIndex = 1
-            message ="trim: Framerate: 30fps"
+            message ="trim: Framerate: 60fps"
         end
         mp.osd_message(message, 3)
     end)
