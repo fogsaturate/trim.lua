@@ -28,17 +28,62 @@ local endPosition = 0.0
 local crfInt = 23 -- h264 default is 23
 
 -- budget enum table from the hood
-local resolutionIndex = 1
-local resolutions = {
-    "1920:1080",
-    "1280:720"
+local heightResolutionIndex = 3 -- 1080 default
+local heightResolutions = {
+    2160,
+    1440,
+    1080,
+    720,
+    480,
+    360,
+    240
 }
+
+local ffmpegScale = "" -- for scale arg in ffmpeg, see resolutionString function for an example
 
 local framerateIndex = 1
 local framerates = {
-    "60",
-    "30"
+    60,
+    30
 }
+
+local function resolutionString(height, aspectW, aspectH)
+    local width = math.ceil(height * (aspectW / aspectH))
+    return tostring(width)..":"..tostring(height) -- returns for example, 1920:1080, 2160:1080 if 21:9 
+end
+
+local function tableSortedInsert(tbl, value) -- This is for adding the resolution if the video resolution isnt found
+    for i = 1, #tbl do
+        if tbl[i] < value then
+            table.insert(tbl, i, value)
+            return i
+        end
+    end
+    table.insert(tbl, value)
+    return #tbl
+end
+
+local function gcd(a, b) -- This is for Aspect Ratio Calculations
+    if b ~= 0 then
+        return gcd(b, a % b)
+    else
+        return math.abs(a)
+    end
+end
+
+local function calculateAspectRatio(width, height)
+    local gcd = gcd(width, height)
+    return width / gcd, height / gcd
+end
+
+local function contains(table, value)
+    for _, v in ipairs(table) do
+        if v == value then
+            return true
+        end
+    end
+    return false
+end
 
 local function initializeIfNeeded()
     if initialized then
@@ -83,21 +128,33 @@ local function initializeIfNeeded()
         mp.osd_message(message, 3)
     end)
 
-    mp.add_forced_key_binding(";", "toggle-resolution", function()
+
+    -- Get Resolution
+    local currentVideoWidth = tonumber(mp.get_property("width"))
+    local currentVideoHeight = tonumber(mp.get_property("height"))
+
+    if not contains(heightResolutions, currentVideoHeight) then
+        heightResolutionIndex = tableSortedInsert(heightResolutions, currentVideoHeight)
+    end
+
+    local currentAspectX, currentAspectY = calculateAspectRatio(currentVideoWidth, currentVideoHeight)
+
+    mp.add_forced_key_binding(";", "cycle-resolution", function()
         local message = ""
 
-        local width = mp.get_property("width")
-        local height = mp.get_property("height")
+        heightResolutionIndex = heightResolutionIndex + 1
 
-        local currentResolution = tostring(width) .. ":" .. tostring(height)
-
-        if resolutionIndex == 1 then
-            resolutionIndex = 2
-            message ="trim: Resolution: 720p"
-        else
-            resolutionIndex = 1
-            message ="trim: Resolution: 1080p"
+        if heightResolutionIndex == #heightResolutions + 1 then
+            heightResolutionIndex = 1
         end
+
+        ffmpegScale = resolutionString(heightResolutions[heightResolutionIndex], currentAspectX, currentAspectY)
+        if heightResolutions[heightResolutionIndex] == currentVideoHeight then
+            message = "trim: Resolution: " .. tostring(heightResolutions[heightResolutionIndex]) .. "p (Current), " .. tostring(currentAspectX) .. ":" .. tostring(currentAspectY)
+        else
+            message = "trim: Resolution: " .. tostring(heightResolutions[heightResolutionIndex]) .. "p, " .. tostring(currentAspectX) .. ":" .. tostring(currentAspectY)
+        end
+
         mp.osd_message(message, 3)
     end)
 
@@ -469,11 +526,11 @@ function writeOut()
         "-i", tostring(sourcePath),
         "-t", tostring(trimDuration),
         
-        "-vf", "scale=" .. resolutions[resolutionIndex],
+        "-vf", "scale=" .. ffmpegScale,
         "-c:v", "libx264",
         "-preset", "ultrafast",
         "-crf", tostring(crfInt),
-        "-r", framerates[framerateIndex],
+        "-r", tostring(framerates[framerateIndex]),
         "-map", "v:0?",
         "-map", "a:0?",
         "-c:a", "copy",
