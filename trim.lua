@@ -39,8 +39,6 @@ local heightResolutions = {
     240
 }
 
-local ffmpegScale = "" -- for scale arg in ffmpeg, see resolutionString function for an example
-
 local framerateIndex = 1
 local framerates = {
     60,
@@ -51,6 +49,8 @@ local function resolutionString(height, aspectW, aspectH)
     local width = math.ceil(height * (aspectW / aspectH))
     return tostring(width)..":"..tostring(height) -- returns for example, 1920:1080, 2160:1080 if 21:9 
 end
+
+local ffmpegScale = resolutionString(heightResolutions[heightResolutionIndex], currentAspectX, currentAspectY)
 
 local function tableSortedInsert(tbl, value) -- This is for adding the resolution if the video resolution isnt found
     for i = 1, #tbl do
