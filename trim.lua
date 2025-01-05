@@ -45,12 +45,12 @@ local framerates = {
     30
 }
 
+local ffmpegScale = ""
+
 local function resolutionString(height, aspectW, aspectH)
     local width = math.ceil(height * (aspectW / aspectH))
     return tostring(width)..":"..tostring(height) -- returns for example, 1920:1080, 2160:1080 if 21:9 
 end
-
-local ffmpegScale = resolutionString(heightResolutions[heightResolutionIndex], currentAspectX, currentAspectY)
 
 local function tableSortedInsert(tbl, value) -- This is for adding the resolution if the video resolution isnt found
     for i = 1, #tbl do
@@ -138,6 +138,7 @@ local function initializeIfNeeded()
     end
 
     local currentAspectX, currentAspectY = calculateAspectRatio(currentVideoWidth, currentVideoHeight)
+    ffmpegScale = resolutionString(heightResolutions[heightResolutionIndex], currentAspectX, currentAspectY)
 
     mp.add_forced_key_binding(";", "cycle-resolution", function()
         local message = ""
@@ -149,6 +150,7 @@ local function initializeIfNeeded()
         end
 
         ffmpegScale = resolutionString(heightResolutions[heightResolutionIndex], currentAspectX, currentAspectY)
+        
         if heightResolutions[heightResolutionIndex] == currentVideoHeight then
             message = "trim: Resolution: " .. tostring(heightResolutions[heightResolutionIndex]) .. "p (Current), " .. tostring(currentAspectX) .. ":" .. tostring(currentAspectY)
         else
