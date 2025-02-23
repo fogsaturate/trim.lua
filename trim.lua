@@ -524,8 +524,8 @@ function writeOut()
         "-hide_banner",
         "-loglevel", "verbose",
 
-        "-ss", tostring(startPosition),
         "-i", tostring(sourcePath),
+        "-ss", tostring(startPosition),
         "-t", tostring(trimDuration),
         
         "-vf", "scale=" .. ffmpegScale,
