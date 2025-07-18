@@ -13,7 +13,7 @@ In short, `trim.lua` turns mpv into a simple audio / video trimmer.
 # Install
 
 ```sh
-curl https://raw.githubusercontent.com/aerobounce/trim.lua/master/trim.lua >> ~/.config/mpv/scripts/trim.lua
+curl https://raw.githubusercontent.com/fogsaturate/trim.lua/master/trim.lua >> ~/.config/mpv/scripts/trim.lua
 ```
 
 ### Requirements
