@@ -6,12 +6,8 @@
 **Differences from the other similar scripts**
 
 - **trim.lua** is aimed only for extraction of clips with **no-transcoding**. Encodings will never be occured.
-- Without encoding, video trimming becomes tricky.
-    - A point you can specify to trim is limited to keyframes.
-    - Tested several softwares on macOS and as far as I know there is no software that can do it accurately. Well, there is, but none were perfect nor lightweight.
-    - This script is to achieve accuracy as much as possible — Making a clip from a file within minimum keyframe distance, without transcoding.
 
-In short, `trim.lua` turns mpv into a simple lossless audio / video editor.
+In short, `trim.lua` turns mpv into a simple audio / video trimmer.
 
 
 # Install
